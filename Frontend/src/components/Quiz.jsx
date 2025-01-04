@@ -9,7 +9,7 @@ const Quiz = () => {
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/quizzes/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/quizzes/${id}`);
         if (!response.ok) throw new Error("Failed to fetch quiz data");
         const data = await response.json();
         setQuiz(data);

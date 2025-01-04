@@ -7,7 +7,7 @@ const Logout = () => {
   useEffect(() => {
     const logout = async () => {
       try {
-        await fetch("http://localhost:5000/api/auth/logout", {
+        await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/logout`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

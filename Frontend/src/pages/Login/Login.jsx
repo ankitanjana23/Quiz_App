@@ -5,9 +5,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
-  const handleLogin = async () => {
-    const response = await fetch("http://localhost:5000/api/auth/login", {
+const handleLogin = async () => {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -20,6 +19,7 @@ const Login = () => {
       alert("Login failed!");
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
