@@ -9,7 +9,6 @@ import Signup from "./pages/Signup/Signup";
 import Logout from "./pages/Logout/Logout";
 
 function App() {
-  console.log("API Base URL:", import.meta.env.VITE_API_BASE_URL);
   
   return (
     <Router>
