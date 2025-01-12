@@ -1,52 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { useParams,Link } from "react-router-dom";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 
-const Quiz = () => {
-  const { id } = useParams();
-  const [quiz, setQuiz] = useState(null);
-  const [error, setError] = useState(null);
+const questions = [
+  { id: 1, question: "What is the capital of France?", options: ["Paris", "London", "Berlin", "Rome"], answer: "Paris" },
+  { id: 2, question: "What is 2 + 2?", options: ["3", "4", "5", "6"], answer: "4" },
+];
 
-  useEffect(() => {
-    const fetchQuiz = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/quizzes/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch quiz data");
-        const data = await response.json();
-        setQuiz(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
+export default function Quiz({ route }) {
+  const { quizId } = route.params;
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
 
-    fetchQuiz();
-  }, [id]);
-
-  if (error) return <div>Error: {error}</div>;
-  if (!quiz) return <div>Loading...</div>;
+  const handleAnswer = (option) => {
+    if (option === questions[currentQuestion].answer) {
+      setScore(score + 1);
+    }
+    if (currentQuestion + 1 < questions.length) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      alert(`Quiz completed! Your score: ${score}/${questions.length}`);
+    }
+  };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">{quiz.title}</h1>
-      <Link
-        to={`/quizzes`}
-        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-4"
+    <View className="flex-1 justify-center items-center bg-gray-100">
+      <View className="w-4/5 bg-white p-6 rounded-lg shadow">
+        <Text className="text-xl font-bold mb-4">{questions[currentQuestion].question}</Text>
+        {questions[currentQuestion].options.map((option, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => handleAnswer(option)}
+            className="bg-blue-500 rounded px-4 py-2 mb-4"
           >
-        Back
-      </Link>
-      {quiz.questions.map((question, index) => (
-        <div key={question._id} className="mb-4">
-          <h2 className="text-xl font-bold">
-            Q{index + 1}: {question.question}
-          </h2>
-          <ul>
-            {question.options.map((option, i) => (
-              <li key={i}>{option}</li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
+            <Text className="text-white text-center">{option}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
   );
-};
-
-export default Quiz;
+}

@@ -1,62 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const QuizList = () => {
-  const [quizzes, setQuizzes] = useState([]);
-  const [error, setError] = useState(null);
+const quizzes = [
+  { id: 1, name: "General Knowledge" },
+  { id: 2, name: "Science Trivia" },
+  { id: 3, name: "History Challenge" },
+];
 
-  useEffect(() => {
-    const fetchQuizzes = async () => {
-      try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/quizzes`);
-        if (!response.ok) throw new Error("Failed to fetch quizzes");
-        const data = await response.json();
-        setQuizzes(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-
-    fetchQuizzes();
-  }, []);
-
-  if (error) return <div>Error: {error}</div>;
-  if (!quizzes.length) return <div>No quizzes available</div>;
+export default function QuizList() {
+  const navigation = useNavigation();
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Quiz List</h1>
-      <Link
-        to={`/home`}
-        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-4"
-          >
-        Back
-      </Link>
-      <ul className="space-y-4">
+    <View className="flex-1 justify-center items-center bg-gray-100">
+      <View className="w-4/5 bg-white p-6 rounded-lg shadow">
+        <Text className="text-2xl font-bold text-center mb-6">Quizzes</Text>
         {quizzes.map((quiz) => (
-          <li key={quiz._id} className="bg-white shadow-lg rounded-lg p-4">
-            <h2 className="text-xl font-bold">{quiz.title}</h2>
-            <div className="flex space-x-4 mt-4">
-              <Link
-                to={`/quiz/${quiz._id}`}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
-                Take Quiz
-              </Link>
-              <Link
-                to={`/leaderboard/${quiz._id}`}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-              >
-                View Leaderboard
-              </Link>
-            </div>
-          </li>
+          <TouchableOpacity
+            key={quiz.id}
+            onPress={() => navigation.navigate("Quiz", { quizId: quiz.id })}
+            className="bg-blue-500 rounded px-4 py-2 mb-4"
+          >
+            <Text className="text-white text-center">{quiz.name}</Text>
+          </TouchableOpacity>
         ))}
-      </ul>
-      
-
-    </div>
+      </View>
+    </View>
   );
-};
-
-export default QuizList;
+}

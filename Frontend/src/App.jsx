@@ -1,28 +1,28 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import HomePage from "./components/HomePage";
 import QuizList from "./components/QuizList";
 import Quiz from "./components/Quiz";
 import Leaderboard from "./components/Leaderboard";
-import Login from "./pages/Login/Login";
-import Signup from "./pages/Signup/Signup";
-import Logout from "./pages/Logout/Logout";
+import Logout from "./pages/Logout";
 
-function App() {
-  
+const Stack = createNativeStackNavigator();
+
+export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/quizzes" element={<QuizList />} />
-        <Route path="/quiz/:id" element={<Quiz />} />
-        <Route path="/leaderboard/:id" element={<Leaderboard />} />
-        <Route path="/logout" element={<Logout />} />
-      </Routes>
-    </Router>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Signup" component={Signup} />
+        <Stack.Screen name="Home" component={HomePage} />
+        <Stack.Screen name="Quizzes" component={QuizList} />
+        <Stack.Screen name="Quiz" component={Quiz} />
+        <Stack.Screen name="Leaderboard" component={Leaderboard} />
+        <Stack.Screen name="Logout" component={Logout} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-export default App;

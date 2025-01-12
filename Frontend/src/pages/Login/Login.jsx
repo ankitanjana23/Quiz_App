@@ -1,60 +1,65 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { API_BASE_URL } from "../utils/fetchConfig";
 
-const Login = () => {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-const handleLogin = async () => {
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await response.json();
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      navigate("/home");
-    } else {
-      alert("Login failed!");
+  const navigation = useNavigation();
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (data.token) {
+        Alert.alert("Login successful!");
+        navigation.navigate("Home");
+      } else {
+        Alert.alert("Login failed!", data.message || "Try again.");
+      }
+    } catch (error) {
+      Alert.alert("Error", error.message);
     }
   };
-  
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-96">
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-        <input
-          type="email"
+    <View className="flex-1 justify-center items-center bg-gray-100">
+      <View className="w-4/5 bg-white p-6 rounded-lg shadow">
+        <Text className="text-2xl font-bold text-center mb-6">Login</Text>
+        <TextInput
           placeholder="Email"
-          className="border w-full p-2 mb-4 rounded"
-          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          onChangeText={setEmail}
+          className="border rounded px-4 py-2 mb-4"
         />
-        <input
-          type="password"
+        <TextInput
           placeholder="Password"
-          className="border w-full p-2 mb-4 rounded"
-          onChange={(e) => setPassword(e.target.value)}
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          className="border rounded px-4 py-2 mb-4"
         />
-        <button
-          onClick={handleLogin}
-          className="bg-blue-500 text-white w-full p-2 rounded hover:bg-blue-600"
+        <TouchableOpacity
+          onPress={handleLogin}
+          className="bg-blue-500 rounded px-4 py-2"
         >
-          Login
-        </button>
-        <p className="text-center mt-4">
+          <Text className="text-white text-center">Login</Text>
+        </TouchableOpacity>
+        <Text className="text-center mt-4">
           Don't have an account?{" "}
-          <span
-            className="text-blue-500 cursor-pointer"
-            onClick={() => navigate("/signup")}
+          <Text
+            className="text-blue-500"
+            onPress={() => navigation.navigate("Signup")}
           >
             Signup
-          </span>
-        </p>
-      </div>
-    </div>
+          </Text>
+        </Text>
+      </View>
+    </View>
   );
-};
-
-export default Login;
+}
