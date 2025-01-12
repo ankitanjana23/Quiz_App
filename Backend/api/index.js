@@ -12,6 +12,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "https://quiz-app-phi-orcin-21.vercel.app/",
+    credentials: true, // If using cookies for authentication
+  })
+);
+
+
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI)
